@@ -223,6 +223,7 @@ func produceTOC(r blackfriday.Renderer, ast *blackfriday.Node) []byte {
 		return blackfriday.GoToNext
 	})
 	currentLevel := 0
+	levelOneID := ""
 	for _, h := range headings {
 		if currentLevel == h.Level {
 			fmt.Fprintf(&buf, "</li>\n")
@@ -237,7 +238,13 @@ func produceTOC(r blackfriday.Renderer, ast *blackfriday.Node) []byte {
 		}
 		currentLevel = h.Level
 		title := html.EscapeString(string(h.Title))
-		fmt.Fprintf(&buf, "<li>\n<a href=\"#%s\" class=\"toc-h%d toc-link\" data-title=\"%s\">%s</a>\n", h.HeadingID, h.Level, title, title)
+		headingID := h.HeadingID
+		if currentLevel == 1 {
+			levelOneID = headingID
+		} else {
+			headingID = levelOneID + "--" + headingID
+		}
+		fmt.Fprintf(&buf, "<li>\n<a href=\"#%s\" class=\"toc-h%d toc-link\" data-title=\"%s\">%s</a>\n", headingID, h.Level, title, title)
 	}
 	for i := 1; i < currentLevel; i++ {
 		fmt.Fprint(&buf, "</li>\n</ul>\n")
@@ -249,6 +256,8 @@ func produceTOC(r blackfriday.Renderer, ast *blackfriday.Node) []byte {
 }
 
 func produceHTML(r blackfriday.Renderer, ast *blackfriday.Node) []byte {
+	levelOneID := ""
+	levelTwoID := ""
 	var buf bytes.Buffer
 	ast.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
 		switch node.Type {
@@ -274,6 +283,18 @@ func produceHTML(r blackfriday.Renderer, ast *blackfriday.Node) []byte {
 			}
 			fmt.Fprint(&buf, "</code></pre>\n")
 			return blackfriday.GoToNext
+		case blackfriday.Heading:
+			if entering {
+				if node.Level == 1 {
+					levelOneID = node.HeadingID
+				} else if node.Level == 2 {
+					levelTwoID = node.HeadingID
+					node.HeadingID = levelOneID + "--" + levelTwoID
+				} else if node.Level == 3 {
+					node.HeadingID = levelOneID + "--" + levelTwoID + "--" + node.HeadingID
+				}
+			}
+			return r.RenderNode(&buf, node, entering)
 		default:
 			return r.RenderNode(&buf, node, entering)
 		}
