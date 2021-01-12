@@ -42,7 +42,7 @@ func monitor(watcher *fsnotify.Watcher, src string, params slate.Params, lock *s
 			if err := slate.Slateficate(src, &afero.Afero{Fs: fs}, params); err != nil {
 				log.Printf("error processing source: %s", err)
 			} else {
-				log.Print("documentation sucessfuly updated")
+				log.Print("documentation successfully updated")
 				lock.Lock()
 				*httpFs = afero.NewHttpFs(fs)
 				lock.Unlock()
