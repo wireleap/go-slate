@@ -1,4 +1,4 @@
-module github.com/growler/go-slate
+module github.com/wireleap/go-slate
 
 go 1.12
 
