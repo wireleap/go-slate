@@ -7,20 +7,21 @@ import (
 	"bytes"
 	"regexp"
 
-	"github.com/growler/go-slate/slate/internal/slate"
-	"github.com/tdewolff/minify"
-	"github.com/wellington/go-libsass"
-	"fmt"
-	"strings"
-	"path/filepath"
+	"context"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"context"
-	"github.com/spf13/afero"
-	"github.com/tdewolff/minify/js"
 	"net/url"
 	"path"
+	"path/filepath"
+	"strings"
+
+	"github.com/spf13/afero"
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/js"
+	"github.com/wellington/go-libsass"
+	"github.com/wireleap/go-slate/slate/internal/slate"
 )
 
 const GoSlateVersion = "v1.0.1"
@@ -249,7 +250,7 @@ func copyStylesheetsAndFonts(fs slate.FileSystem, target *afero.Afero, style []s
 		}
 	}
 	for _, s := range targets {
-		err := func () error {
+		err := func() error {
 			src, err := fs.Open(path.Join("stylesheets", s+".scss"))
 			if err != nil {
 				return fmt.Errorf("can't open Slate stylesheet source file %s: %s", s+".scss", err)

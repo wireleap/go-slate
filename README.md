@@ -23,7 +23,7 @@ So I quickly hacked go-slate.
 ## Installation
 
 ```text
-$ go get -u github.com/growler/go-slate
+$ go get -u github.com/wireleap/go-slate
 ```
 
 ## How to start

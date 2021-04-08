@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/growler/go-slate/slate"
 	"github.com/spf13/afero"
+	"github.com/wireleap/go-slate/slate"
 )
 
 func monitor(watcher *fsnotify.Watcher, src string, params slate.Params, lock *sync.RWMutex, httpFs **afero.HttpFs) {
