@@ -1,14 +1,15 @@
 package slate
 
 import (
-	"os"
+	"fmt"
 	"io"
-	"github.com/growler/go-slate/slate/internal/slate"
+	"io/ioutil"
+	"os"
 	"sort"
 	"strings"
-	"fmt"
+
 	"github.com/spf13/afero"
-	"io/ioutil"
+	"github.com/wireleap/go-slate/slate/internal/slate"
 )
 
 func makeTargetDirs(fs *afero.Afero, dirs ...string) error {
@@ -99,7 +100,7 @@ func Extract(target string, overwrite bool, components ...string) error {
 			dstFiles["includes/_errors.md"] = true
 		case "fonts", "images", "layouts", "javascripts", "stylesheets":
 			for _, s := range srcFiles {
-				if strings.HasPrefix(s, c + "/") {
+				if strings.HasPrefix(s, c+"/") {
 					dstFiles[s] = true
 				}
 			}

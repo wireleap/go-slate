@@ -5,17 +5,18 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"github.com/spf13/cobra"
-	"github.com/growler/go-slate/slate"
-	"time"
-	"github.com/spf13/afero"
-	"path/filepath"
-	"io/ioutil"
-	"github.com/growler/go-imbed/imbed"
-	"github.com/growler/go-slate/server"
 	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"time"
+
+	"github.com/growler/go-imbed/imbed"
+	"github.com/spf13/afero"
+	"github.com/spf13/cobra"
+	"github.com/wireleap/go-slate/server"
+	"github.com/wireleap/go-slate/slate"
 )
 
 var (
@@ -66,10 +67,10 @@ func setParams(params *slate.Params, opts generateOptions) error {
 
 func cmdVersion() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "version",
+		Use:   "version",
 		Short: "prints version",
-		Long: `Prints versions of both go-slate and embedded Slate`,
-		Args: cobra.ExactArgs(0),
+		Long:  `Prints versions of both go-slate and embedded Slate`,
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Printf("go-slate version: %s\n", slate.GoSlateVersion)
 			fmt.Printf("slate version:    %s\n", slate.SlateVersion)
@@ -80,7 +81,7 @@ func cmdVersion() *cobra.Command {
 }
 
 type generateOptions struct {
-	noMinify []string
+	noMinify  []string
 	search    bool
 	noSearch  bool
 	rtl       bool
@@ -102,9 +103,9 @@ func genOpts(cmd *cobra.Command, opts *generateOptions) {
 func cmdSite() *cobra.Command {
 	var opts generateOptions
 	cmd := &cobra.Command{
-		Use: "site [source directory] [output directory]",
+		Use:   "site [source directory] [output directory]",
 		Short: "renders documentation from source directory to output directory",
-		Args: cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var params slate.Params
 			if err := setParams(&params, opts); err != nil {
@@ -152,7 +153,7 @@ func cmdPackage() *cobra.Command {
 	var workDir string
 	var pkgName string
 	cmd := &cobra.Command{
-		Use: "package [source directory] [resulting package directory]",
+		Use:   "package [source directory] [resulting package directory]",
 		Short: "produces an embeddable package with rendered documentation content and HTTP handler",
 		Long: `
 Produces an embeddable package with rendered documentation content using github.com/growler/go-imbed tool.
@@ -179,7 +180,7 @@ The package will also contain HTTP handler to serve content with standard Go htt
 			if pkgName == "" {
 				pkgName = filepath.Base(args[1])
 			}
-			if err := imbed.Imbed(workDir, args[1], pkgName, imbed.CompressAssets | imbed.BuildHttpHandlerAPI); err != nil {
+			if err := imbed.Imbed(workDir, args[1], pkgName, imbed.CompressAssets|imbed.BuildHttpHandlerAPI); err != nil {
 				return err
 			}
 			return nil
@@ -197,7 +198,7 @@ func cmdServer() *cobra.Command {
 	var tlsKey string
 	var monitor bool
 	cmd := &cobra.Command{
-		Use: "server [source directory] [address to listen at]",
+		Use:   "server [source directory] [address to listen at]",
 		Short: "serves rendered API documentation over HTTP(S)",
 		Long: `
 Serves API documentation over HTTP(S) at specified address. Monitors changes if requested and
@@ -221,7 +222,7 @@ updates documentation in real time.
 
 func cmdExtract() *cobra.Command {
 	var (
-		list bool
+		list      bool
 		overwrite bool
 	)
 	cmd := &cobra.Command{
@@ -253,7 +254,7 @@ $
 			} else if len(args) == 0 {
 				return fmt.Errorf("")
 			} else if len(args) == 1 {
-				return slate.Extract(args[0], overwrite,"contents")
+				return slate.Extract(args[0], overwrite, "contents")
 			} else {
 				return slate.Extract(args[0], overwrite, args[1:]...)
 			}
@@ -268,7 +269,7 @@ func init() {
 	var timings bool
 	var startTs time.Time
 	cmd = &cobra.Command{
-		Use: "go-slate",
+		Use:   "go-slate",
 		Short: "a simple Go tool to generate API documentation using brilliant github.com/lord/slate layout",
 		Long: `
 go-slate is a CLI tool to generate API documentation using brilliant Slate layout 
